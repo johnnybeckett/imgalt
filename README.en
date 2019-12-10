@@ -1,0 +1,135 @@
+Image Alignment Tool
+(c) GreatAttractor
+v. 0.5
+2014/05/22
+
+This program is free for all uses and can be freely distributed.
+
+
+1. Introduction
+  1.1 Command-line syntax
+  1.2 Downloading
+  1.3 Notes
+    1.3.1 File conversion
+    1.3.2 Running without using the command prompt (console)
+2. Building from source
+2.1 Building with MinGW
+2.2 Building with Microsoft C++ (from Windows SDK or Visual Studio/Visual C++)
+2.3 Building with GCC (Linux and alikes, MinGW+MSYS)
+3. Change history
+
+----------------------------------------
+1. Introduction
+
+Imgalt is a tool for automatic alignment of image sequences, with possibly large and chaotic translations between images. BMP files (8- and 24-bit, grayscale or color) and TIFF files (8 and 16 bits per channel, grayscale or RGB) are accepted on input. Sizes of input files need not be identical. After alignment, a sequence of new image files is produced (in the same format as the input files), each of the same size, equal to the intersection (largest common area) of input images after alignment. (Alternatively, the images may be padded to the bounding box by using --no-crop parameter).
+
+Because of a neccessary interpolation during sub-pixel alignment, 8-bit BMP (with palette) input files are be saved as 24-bit RGB BMPs. (This is not the case if "--no-subpixel" parameter is specified.)
+
+An example usage scenario would be preparing animation frames to be aligned in a separate directory (folder), passing them to imgalt, then opening aligned frames in GIMP (File->Open as Layers...), post-processing and cropping (select an area, then Image->Crop to Selection), and finally exporting as an animated GIF (File->Export, choose GIF format, select "As Animation").
+
+  ----------------------------------------
+  1.1 Command-line syntax
+  
+General usage syntax:
+  
+  imgalt [--verbose] [--threads <count>] [--no-crop] [--no-subpixel] [--output-dir <output directory>] [[--input-dir] <input directory>]
+  
+Input directory is the default parameter, so "--input-dir" may be ommitted. Some simple calls:
+
+  imgalt c:\astro\solar
+  
+(aligns all files found in c:\astro\solar and writes aligned images in the current directory).
+
+  imgalt
+  
+(aligns all files found in current directory and writes aligned images at the same location).
+
+Imgalt aligns all the BMP and TIFF files (sorted by name) found in the input directory (default: current) and saves them with "_aligned" suffix in the output directory (default: current).
+
+The "--verbose" parameter enables printing of additional information during processing.
+
+The "--threads" parameter selects the number of threads to use (default: number of detected logical processors).
+
+The "--no-crop" parameter enables saving images padded to the common bounding box instead of cropping to the intersection.
+
+The "--no-subpixel" parameter disables sub-pixel alignment. Using this parameter may result in a more visible "drift" in output images or a subtle jittering. Also saving of output images will be faster (but not the alignment itself).
+
+If input or output directories contain spaces, they need to be enclosed in quotes, e.g.:
+
+  imgalt "c:\astro\June 12" --output-dir "c:\astro\June 12\aligned"
+
+  ----------------------------------------  
+  1.2 Downloading  
+  
+The latest version can be downloaded from:
+
+http://stargazerslounge.com/blog/1400/entry-1654-imgalt/
+http://astropolis.pl/topic/44806-narzedzie-do-automatycznego-wyrownywania-klatek-animacji-slonecznych/#entry534928
+  
+  ----------------------------------------  
+  1.3 Notes
+  
+    ----------------------------------------
+    1.3.1 File conversion
+
+Files can be quickly converted en masse in e.g. IrfanView (File->Batch Conversion/Rename...). An animated GIF can be split e.g. in VirtualDub (open GIF file, then File->Export->Image sequence...).
+  
+    ----------------------------------------
+    1.3.2 Running without using the command prompt (console)
+    
+Since running imgalt with no parameters implies current directory (folder) as the input directory, one can do the following:
+  - copy image files to be aligned into the the directory where imgalt.exe is located
+  - run imgalt.exe
+Output (aligned) files will appear in the same directory.
+
+Another method (under MS Windows, but may work in other graphical environments) is dragging the directory with input files and dropping it on imgalt.exe icon. The aligned files will appear in whatever directory was current at the time (e.g. under Windows, when dragging the folder "d:\astro\sequence1", output images should appear in "d:\astro").
+
+----------------------------------------    
+2. Building from source
+
+Imgalt's source code can be freely distributed and used for any purpose. Building requires Boost libraries v. 1.53.0 or newer (older versions may work after small changes in imgalt's source). Multithreading requires compiler supporting OpenMP (e.g. GCC 4.2 or newer, MS Visual C++ 2008 or newer (non-free editions), MS Visual C++ 2012 Express or newer).
+
+  ----------------------------------------
+  2.1 Building with MinGW
+
+Open Makefile.mingw and change the variables BOOST_INCLUDE and BOOST_LIBS to match your Boost installation. Make sure MinGW toolset is on the search path (e.g. run "set PATH=%PATH%;c:\mingw\bin"), then run the following:
+
+    mingw32-make -f Makefile.mingw
+    
+  ----------------------------------------
+  2.2 Building with Microsoft C++ (from Windows SDK or Visual Studio/Visual C++)
+  
+Open Makefile.msvc and change the variables BOOST_INCLUDE and BOOST_LIBS to match your Boost installation. Read the note regarding OpenMP support. Make sure MSVC toolset is on the search path (e.g. run "C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\vcvars32.bat"), then run the following:
+
+    nmake -f Makefile.msvc
+    
+  ----------------------------------------    
+  2.3 Building with GCC (Linux and alikes, MinGW+MSYS)
+  
+Make sure Boost binary and development libraries are installed (e.g. on Linux install the packages "boost", "boost-devel"), then run the following:
+
+    make -f Makefile.gcc
+    
+----------------------------------------    
+3. Change history
+
+0.5 (2014/05/22)
+    New features:
+      - sub-pixel alignment
+
+0.4.1 (2014/05/05)
+    New features:
+      - support for TIFF images
+
+0.4 (2014/05/02)
+    New features:
+      - cropping to intersection by default
+    Bug fixes:
+      - fixed invalid translation during saving of aligned images which caused chaotic 1-pixel jittering
+
+0.3 (2014/04/25)
+    New features:
+      - accepting also color input images
+      - saving output images in the same pixel (color) format as input images
+    Bug fixes:
+      - fixed saving of BMPs with line length not a multiple of 4   

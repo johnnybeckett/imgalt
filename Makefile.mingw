@@ -1,0 +1,34 @@
+#
+# Makefile for MinGW
+#
+
+# Set this to your Boost root directory
+BOOST_INCLUDE = ..\boost_1_55_0
+
+# Set this correctly for your Boost installation
+BOOST_LIBS = -L ..\boost_1_55_0\stage\lib -lboost_system-mgw48-mt-s-1_55 -lboost_filesystem-mgw48-mt-s-1_55 -lboost_chrono-mgw48-mt-s-1_55
+
+
+
+OBJECTS = main.o comp.o fft.o
+
+CC_OPTS = -c -O3 -ffast-math -fopenmp -I $(BOOST_INCLUDE)
+EXE_NAME = imgalt.exe
+
+all: $(EXE_NAME)
+
+clean:
+	del $(OBJECTS)
+	del $(EXE_NAME)
+
+$(EXE_NAME): $(OBJECTS)
+	g++ $(OBJECTS) $(BOOST_LIBS) -fopenmp -static-libstdc++ -s -o $(EXE_NAME)
+
+main.o: main.cpp
+	g++ $(CC_OPTS) main.cpp
+
+comp.o: comp.cpp
+	g++ $(CC_OPTS) comp.cpp
+
+fft.o: fft.cpp
+	g++ $(CC_OPTS) fft.cpp

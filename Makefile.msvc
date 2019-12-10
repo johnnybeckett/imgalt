@@ -1,0 +1,46 @@
+#
+# Makefile for MS C++ 32-bit
+#
+
+
+# Set this to your Boost root directory
+BOOST_INCLUDE = ..\boost_1_55_0
+
+# Set this to your Boost libs directory
+BOOST_LIBS = ..\boost_1_55_0\stage\lib
+
+# When using a free edition of MC C++ compiler from Visual C++ Express 2010 or earlier or from
+# a Windows SDK, multithreading via OpenMP is not supported (neccessary libraries are missing, e.g. vcomp.lib).
+# If this is the case, set OPENMP_OPT below to empty.
+
+# OPENMP_OPT =
+OPENMP_OPT = /openmp
+
+
+
+
+OBJECTS = \
+  main.obj \
+  comp.obj \
+  fft.obj
+  
+CC_OPTS = /EHsc /c /O2 /fp:fast /arch:SSE2 $(OPENMP_OPT) /I$(BOOST_INCLUDE)
+EXE_NAME = imgalt.exe
+
+all: $(EXE_NAME)
+
+clean:
+	del $(OBJECTS)
+	del $(EXE_NAME)
+
+$(EXE_NAME): $(OBJECTS)
+	cl $(OBJECTS) $(OPENMP_OPT) /Fe$(EXE_NAME) /link /SUBSYSTEM:CONSOLE /LIBPATH:$(BOOST_LIBS)
+
+main.obj: main.cpp
+    cl $(CC_OPTS) main.cpp
+    
+comp.obj: comp.cpp
+	cl $(CC_OPTS) comp.cpp
+    
+fft.obj: fft.cpp
+	cl $(CC_OPTS) fft.cpp
