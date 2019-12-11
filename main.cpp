@@ -255,12 +255,11 @@ RealPoint_t DetermineImageTranslation(
 
     bch::high_resolution_clock::time_point tstart;
 
-    // Using malloc instead of new[] to avoid N*N std::complex constructor calls. All the elements will be assigned to before use.
 
     // Cross-power spectrum
-    std::complex<float> *cps = (std::complex<float> *)malloc(N*N * sizeof(std::complex<float>));
+    std::complex<float> *cps = new std::complex<float>[N*N];
     // Cross-correlation
-    std::complex<float> *cc = (std::complex<float> *)malloc(N*N * sizeof(std::complex<float>));
+    std::complex<float> *cc = new std::complex<float>[N*N];
 
     Log::Print(Log::VERBOSE, std::string(" Cross-power spectrum: "));
     tstart = bch::high_resolution_clock::now();
@@ -395,9 +394,8 @@ bool DetermineTranslationVectors(
     float *prevImg = new float[N*N]; // previous image in the sequence (padded to N*N pixels and with window func. applied)
     float *currImg = new float[N*N]; // current image in the sequence (padded to N*N pixels and with window func. applied)
 
-    // Use malloc instead of new[] to avoid N*N std::complex constructor calls. All the elements will be assigned to before use.
-    std::complex<float> *prevFFT = (std::complex<float> *)malloc(N*N * sizeof(std::complex<float>));
-    std::complex<float> *currFFT = (std::complex<float> *)malloc(N*N * sizeof(std::complex<float>));
+    std::complex<float> *prevFFT = new std::complex<float>[N*N];
+    std::complex<float> *currFFT = new std::complex<float>[N*N];
 
     Log::Print(Log::NORMAL, boost::str(boost::format("Processing %d images (Ctrl-C to break)...\n\n") % inputFiles.size()));
 

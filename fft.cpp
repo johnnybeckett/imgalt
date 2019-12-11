@@ -151,7 +151,7 @@ void CalcFFT1D(
     unsigned N,
     std::complex<float> output[])
 {
-    complex<float> *twiddleFactors = (complex<float> *)malloc((quickLog2(N) + 1) * sizeof(complex<float>));
+    complex<float> *twiddleFactors = new complex<float>[(quickLog2(N) + 1)];
     CalcTwiddleFactors(N, twiddleFactors, false);
 
     fft1d<uint8_t>(input, N, output, 1, 1, twiddleFactors + quickLog2(N));
@@ -165,7 +165,7 @@ void CalcFFTinv1D(
     unsigned N,
     std::complex<float> output[])
 {
-    complex<float> *twiddleFactors = (complex<float> *)malloc((quickLog2(N) + 1) * sizeof(complex<float>));
+    complex<float> *twiddleFactors = new complex<float>[(quickLog2(N) + 1)];
     CalcTwiddleFactors(N, twiddleFactors, true);
     
     fft1d(input, N, output, 1, 1, twiddleFactors + quickLog2(N));
@@ -188,11 +188,11 @@ void CalcFFT2D(
 {
     int k;
 
-    complex<float> *twiddleFactors = (complex<float> *)malloc((quickLog2(N) + 1) * sizeof(complex<float>));
+    complex<float> *twiddleFactors = new complex<float>[(quickLog2(N) + 1)];
     CalcTwiddleFactors(N, twiddleFactors, false);
 
     // Calculate 1-dimensional transforms of all the rows
-    std::complex<float> *fftrows = (std::complex<float> *)malloc(N*N*sizeof(std::complex<float>));
+    std::complex<float> *fftrows = new std::complex<float>[N*N*sizeof(std::complex<float>)];
     #pragma omp parallel for
     for (k = 0; k < N; k++)
         fft1d<float>(input + k*N, N, fftrows + k*N, 1, 1, twiddleFactors + quickLog2(N));
@@ -216,11 +216,11 @@ void CalcFFTinv2D(
     int k;
     float Ninv = 1.0f/N;
 
-    complex<float> *twiddleFactors = (complex<float> *)malloc((quickLog2(N) + 1) * sizeof(complex<float>));
+    complex<float> *twiddleFactors = new complex<float>[(quickLog2(N) + 1)];
     CalcTwiddleFactors(N, twiddleFactors, true);
 
     // Calculate 1-dimensional inverse transforms of all the rows
-    std::complex<float> *fftrows = (std::complex<float> *)malloc(N*N*sizeof(std::complex<float>));
+    std::complex<float> *fftrows = new std::complex<float>[N*N];
     #pragma omp parallel for
     for (k = 0; k < N; k++)
         fft1d<std::complex<float> >(input + k*N, N, fftrows + k*N, 1, 1, twiddleFactors + quickLog2(N));

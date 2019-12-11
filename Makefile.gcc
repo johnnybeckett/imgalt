@@ -8,7 +8,7 @@
 
 OBJECTS = main.o comp.o fft.o
 
-CC_OPTS = -c -O3 -ffast-math -fopenmp
+CPP_OPTS = -ggdb3 -c -O3 -ffast-math -fopenmp --std=c++17 -march=native
 EXE_NAME = imgalt
 
 all: $(EXE_NAME)
@@ -21,10 +21,10 @@ $(EXE_NAME): $(OBJECTS)
 	g++ $(OBJECTS) -fopenmp -lboost_system -lboost_filesystem -lboost_chrono -o $(EXE_NAME)
 
 main.o: main.cpp
-	g++ $(CC_OPTS) main.cpp
+	g++ $(CPP_OPTS) main.cpp
 
 comp.o: comp.cpp
-	g++ $(CC_OPTS) comp.cpp
+	g++ $(CPP_OPTS) comp.cpp
 
 fft.o: fft.cpp
-	g++ $(CC_OPTS) fft.cpp
+	g++ $(CPP_OPTS) fft.cpp
