@@ -1,6 +1,6 @@
 name: C/C++ CI
 
-on: [push]
+on: [push,pull_request]
 
 jobs:
   build:
@@ -9,6 +9,12 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: |
+        sudo rm -rf /usr/local/share/boost/1.69.0
+        export APT_DEPENDENCIES="libboost-dev libboost"
+        sudo apt-get update -qq
+        sudo apt-get install -qq ${APT_DEPENDENCIES}
     - name: make
       run: make -f Makefile.gcc
 
