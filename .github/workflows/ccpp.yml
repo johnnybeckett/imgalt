@@ -11,9 +11,9 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install dependencies
       run: |
-        export APT_DEPENDENCIES="libboost-dev"
+        export APT_DEPENDENCIES="libboost-dev libboost-chrono-dev libboost-system-dev libboost-filesystem-dev"
         sudo apt-get update -qq
         sudo apt-get install -qq ${APT_DEPENDENCIES}
-    - name: make
+    - name: Make
       run: make -f Makefile.gcc
 
