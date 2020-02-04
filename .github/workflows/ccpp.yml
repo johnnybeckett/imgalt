@@ -11,8 +11,7 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install dependencies
       run: |
-        sudo rm -rf /usr/local/share/boost/1.69.0
-        export APT_DEPENDENCIES="libboost-dev libboost"
+        export APT_DEPENDENCIES="libboost-dev"
         sudo apt-get update -qq
         sudo apt-get install -qq ${APT_DEPENDENCIES}
     - name: make
